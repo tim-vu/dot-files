@@ -1,0 +1,14 @@
+<eww>
+    <includes>
+        <file path="./windows/volume_popup/volume_popup.xml" />
+    </includes>
+    <variables>
+
+    </variables>
+    <definitions>
+    </definitions>
+
+    <windows>
+
+    </windows>
+</eww>

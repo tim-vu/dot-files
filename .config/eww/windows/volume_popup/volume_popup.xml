@@ -1,0 +1,30 @@
+<eww>
+    <variables>
+        <var name="volume">
+            100
+        </var>
+        <var name="volume_popup-icon">
+            volume-high.svg
+        </var>
+        <var name="volume_popup-timestamp">
+            0
+        </var>
+    </variables>
+    <definitions>
+        <def name="volume-popup">
+            <box class="volume-popup" orientation="v" height="50" space-evenly="false" spacing="30">
+                <image path="./{{volume_popup-icon}}" width="128" height="128" />
+                <progress value="{{volume}}" />
+            </box>
+        </def>
+    </definitions>
+
+    <windows>
+        <window name="volume_popup" stacking="fg" focusable="false">
+            <geometry anchor="center center" />
+            <widget>
+                <volume-popup/>
+            </widget>
+        </window>
+    </windows>
+</eww>

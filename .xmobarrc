@@ -1,0 +1,14 @@
+Config { position = Top
+       , font     = "xft:Source Code Pro for Powerline:size=11:bold:antialias=true"
+       , border = BottomB
+       , borderColor = "#bd93f9"
+       , fgColor = "#f8f8f2"
+       , bgColor = "#282a36"
+       , alpha = 255  -- 0 transparent, 255 opaque
+       , sepChar = "%"
+       , alignSep = "}{"
+       , commands = [ Run StdinReader
+                    , Run Date "%A %_d %B %_I:%M" "date" 300
+                    ]
+       , template = " %StdinReader% } %date% {"
+       }
