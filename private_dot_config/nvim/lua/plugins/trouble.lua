@@ -10,7 +10,7 @@ return {
       ['<ESC>'] = 'close',
       ['<CR>'] = 'jump_close',
       ['j'] = 'next',
-      ['k'] = 'prev'
+      ['k'] = 'prev',
     },
   },
   config = function(_, opts)

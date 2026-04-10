@@ -17,10 +17,20 @@ return {
     },
     completion = {
       menu = { auto_show = true },
-      ghost_text = { enabled = true },
-      trigger = { show_on_trigger_character = true },
+      trigger = {
+        show_on_keyword = true,
+        show_on_trigger_character = true,
+        show_on_insert_on_trigger_character = true,
+        show_on_accept_on_trigger_character = true,
+      },
+      list = {
+        selection = {
+          preselect = true,
+          auto_insert = false,
+        },
+      },
     },
-    appearance = { nerd_font_variant = 'mono' },
-    sources = { default = { 'lsp', 'snippets' } },
+    signature = { enabled = true },
+    sources = { default = { 'lsp', 'path' } },
   },
 }

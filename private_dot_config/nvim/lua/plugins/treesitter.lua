@@ -3,8 +3,9 @@ return {
   dependencies = { 'nvim-treesitter/nvim-treesitter-textobjects' },
   build = ':TSUpdate',
   config = function()
+    ---@diagnostic disable-next-line: missing-fields
     require('nvim-treesitter.configs').setup({
-      ensure_installed = { 'vimdoc', 'vim', 'lua', 'c_sharp', 'dockerfile', 'json', 'xml'},
+      ensure_installed = { 'vimdoc', 'vim', 'lua', 'bash', 'c_sharp', 'dockerfile', 'json', 'xml' },
       auto_install = true,
       highlight = { enable = true },
       indent = { enable = true },
@@ -45,5 +46,5 @@ return {
         },
       },
     })
-  end
+  end,
 }

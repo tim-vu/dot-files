@@ -2,19 +2,22 @@ return {
   'olimorris/persisted.nvim',
   lazy = false,
   opts = {
-    autostart = false,
+    autostart = true,
     autoload = false,
     follow_cwd = true,
     use_git_branch = true,
     save_dir = vim.fn.stdpath('state') .. '/sessions/',
+    on_autoload_no_session = function()
+      vim.cmd('intro')
+    end,
   },
   config = function(_, opts)
     require('persisted').setup(opts)
 
+    local is_starting = true
     vim.api.nvim_create_autocmd('VimEnter', {
       group = vim.api.nvim_create_augroup('persisted_autoload', { clear = true }),
       callback = function()
-
         if vim.g.started_with_stdin then
           return
         end
@@ -42,23 +45,29 @@ return {
       nested = true,
     })
 
-    vim.api.nvim_create_autocmd("User", {
-      pattern = "PersistedLoadPre",
-      callback = function(session)
-        vim.notify('PersistedLoadPre')
-      end,
-    })
-
-    vim.api.nvim_create_autocmd("User", {
-      pattern = "PersistedSavePre",
+    local file_types = { NvimTree = true, snacks_terminal = true }
+    vim.api.nvim_create_autocmd('User', {
+      pattern = 'PersistedSavePre',
       callback = function()
-        local api = require('nvim-tree.api')
         for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-          if api.tree.is_tree_buf(buf) then
-            vim.api.nvim_buf_delete(buf, { force = true })
+          if vim.api.nvim_buf_is_valid(buf) and file_types[vim.bo[buf].filetype] then
+            vim.api.nvim_buf_delete(buf, {
+              force = true,
+            })
           end
         end
       end,
     })
-  end
+
+    vim.api.nvim_create_autocmd('DirChanged', {
+      pattern = 'global',
+      callback = function()
+        vim.schedule(function()
+          local persisted = require('persisted')
+          persisted.load({ autoload = true })
+          persisted.start()
+        end)
+      end,
+    })
+  end,
 }
