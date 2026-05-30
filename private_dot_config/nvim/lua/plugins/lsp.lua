@@ -8,9 +8,24 @@ if vim.fn.isdirectory(lsp_path) == 1 then
   end
 end
 
+local file_operation_capabilities = {
+  workspace = {
+    fileOperations = {
+      willRename = true,
+      didRename = true,
+      willCreate = true,
+      didCreate = true,
+      willDelete = true,
+      didDelete = true,
+    },
+  },
+}
+
 for name, module in pairs(servers) do
   if module.lsp and module.lsp.config ~= nil then
     local lsp_name = module.lsp.name or name
+    module.lsp.config.capabilities =
+      vim.tbl_deep_extend('force', file_operation_capabilities, module.lsp.config.capabilities or {})
     vim.lsp.config(lsp_name, module.lsp.config)
     vim.lsp.enable(lsp_name)
   end

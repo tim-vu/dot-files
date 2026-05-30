@@ -74,6 +74,14 @@ return {
         return space ~= 0 and 'TW:' .. space or ''
       end
 
+      local filename = function()
+        if vim.bo.filetype == 'toggleterm' and vim.b.toggle_number ~= nil then
+          return 'terminal ' .. vim.b.toggle_number
+        end
+
+        return vim.fn.expand('%:t')
+      end
+
       local conditions = {
         buffer_not_empty = function()
           return vim.fn.empty(vim.fn.expand('%:t')) ~= 1
@@ -103,6 +111,9 @@ return {
           },
           lualine_b = {
             { 'branch', icon = { '' } },
+          },
+          lualine_c = {
+            { filename },
           },
           lualine_x = {
             { trailing },
@@ -137,7 +148,13 @@ return {
   },
   {
     'nvim-tree/nvim-tree.lua',
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    dependencies = {
+      'nvim-tree/nvim-web-devicons',
+      {
+        'antosha417/nvim-lsp-file-operations',
+        dependencies = { 'nvim-lua/plenary.nvim' },
+      },
+    },
     event = { 'BufReadPost' },
     ---@type nvim_tree.config
     opts = {
@@ -170,11 +187,85 @@ return {
             api.node.open.edit()
           end
         end
+        local function is_absolute_path(path)
+          return vim.startswith(path, '/') or path:match('^%a:[/\\]')
+        end
+        local function rename_node(node, new_path)
+          local rename = require('nvim-tree.actions.fs.rename-file')
+
+          rename.rename(node, new_path)
+          api.tree.reload()
+          api.tree.find_file({ buf = new_path })
+        end
+        local function rename_relative()
+          local node = api.tree.get_node_under_cursor()
+          if node == nil or node.absolute_path == nil or node.name == '..' then
+            return
+          end
+
+          local utils = require('nvim-tree.utils')
+          local cwd = vim.fn.getcwd()
+          local default_path = utils.path_relative(node.absolute_path, cwd)
+
+          vim.ui.input({
+            prompt = 'Rename to ',
+            default = default_path,
+            completion = 'file',
+          }, function(new_path)
+            utils.clear_prompt()
+            if new_path == nil or new_path == '' then
+              return
+            end
+
+            if not is_absolute_path(new_path) then
+              new_path = utils.path_join({ cwd, new_path })
+            end
+
+            rename_node(node, new_path)
+          end)
+        end
+        local function move_relative()
+          local node = api.tree.get_node_under_cursor()
+          if node == nil or node.absolute_path == nil or node.name == '..' then
+            return
+          end
+
+          local utils = require('nvim-tree.utils')
+          local cwd = vim.fn.getcwd()
+          local basename = vim.fn.fnamemodify(node.absolute_path, ':t')
+          local parent = vim.fn.fnamemodify(node.absolute_path, ':h')
+          local default_path = vim.fs.relpath(cwd, parent) or parent
+
+          if default_path == '.' then
+            default_path = './'
+          else
+            default_path = utils.path_add_trailing(default_path)
+          end
+
+          vim.ui.input({
+            prompt = 'Move to ',
+            default = default_path,
+            completion = 'dir',
+          }, function(new_path)
+            utils.clear_prompt()
+            if new_path == nil or new_path == '' then
+              return
+            end
+
+            if not is_absolute_path(new_path) then
+              new_path = utils.path_join({ cwd, new_path })
+            end
+
+            new_path = utils.path_join({ new_path, basename })
+            rename_node(node, new_path)
+          end)
+        end
         vim.keymap.set('n', 'l', edit_or_open, opts('Open'))
         vim.keymap.set('n', 'h', close_directory, opts('Close'))
         vim.keymap.set('n', 'p', api.node.navigate.parent, opts('Go to parent'))
         vim.keymap.set('n', 'x', api.fs.create, opts('Create file'))
-        vim.keymap.set('n', 'r', api.fs.rename, opts('Rename'))
+        vim.keymap.set('n', 'r', rename_relative, opts('Rename'))
+        vim.keymap.set('n', '<C-r>', move_relative, opts('Move'))
         vim.keymap.set('n', '<Esc>', api.tree.close, opts('Close'))
       end,
       hijack_cursor = true,
@@ -195,19 +286,7 @@ return {
         { desc = 'Open tree', noremap = true, silent = true }
       )
       require('nvim-tree').setup(opts)
-      local prev = { new_name = '', old_name = '' } -- Prevents duplicate events
-      vim.api.nvim_create_autocmd('User', {
-        pattern = 'NvimTreeSetup',
-        callback = function()
-          local events = require('nvim-tree.api').events
-          events.subscribe(events.Event.NodeRenamed, function(data)
-            if prev.new_name ~= data.new_name or prev.old_name ~= data.old_name then
-              data = data
-              Snacks.rename.on_rename_file(data.old_name, data.new_name)
-            end
-          end)
-        end,
-      })
+      require('lsp-file-operations').setup()
     end,
   },
   { 'typicode/bg.nvim', lazy = false },

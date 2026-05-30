@@ -14,7 +14,6 @@ return {
   config = function(_, opts)
     require('persisted').setup(opts)
 
-    local is_starting = true
     vim.api.nvim_create_autocmd('VimEnter', {
       group = vim.api.nvim_create_augroup('persisted_autoload', { clear = true }),
       callback = function()

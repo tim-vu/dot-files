@@ -23,7 +23,7 @@ return {
         end
       end
 
-      local ensure_installed = {}
+      local ensure_installed = { 'tree-sitter-cli' }
       for _, module in pairs(servers) do
         if module.lsp and module.lsp.package then
           table.insert(ensure_installed, module.lsp.package)
