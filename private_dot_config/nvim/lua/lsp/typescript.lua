@@ -1,6 +1,6 @@
 return {
   lsp = {
-    name = "vtsls",
+    name = 'vtsls',
     package = 'vtsls',
     ---@type vim.lsp.Config
     config = {

@@ -35,7 +35,24 @@ return {
             { win = 'list', border = 'rounded' },
           },
         },
+        codecompanion_actions = {
+          layout = {
+            box = 'vertical',
+            backdrop = false,
+            width = 58,
+            height = 11,
+            border = 'none',
+            { win = 'input', height = 1, border = 'rounded', title = '{title} {live} {flags}', title_pos = 'center' },
+            { win = 'list', border = 'rounded' },
+          },
+        },
       },
+      config = function(opts)
+        if opts.title == 'CodeCompanion actions' then
+          opts.layout = { preset = 'codecompanion_actions' }
+        end
+        return opts
+      end,
       layout = {
         preset = 'find',
       },

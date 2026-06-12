@@ -6,7 +6,6 @@ local group = vim.api.nvim_create_augroup('lspconfig.roslyn_ls', { clear = true 
 ---@param client vim.lsp.Client
 ---@param target string
 local function on_init_sln(client, target)
-  vim.notify('Initializing: ' .. target, vim.log.levels.TRACE, { title = 'roslyn_ls' })
   ---@diagnostic disable-next-line: param-type-mismatch
   client:notify('solution/open', {
     solution = vim.uri_from_fname(target),
@@ -16,7 +15,6 @@ end
 ---@param client vim.lsp.Client
 ---@param project_files string[]
 local function on_init_project(client, project_files)
-  vim.notify('Initializing: projects', vim.log.levels.TRACE, { title = 'roslyn_ls' })
   ---@diagnostic disable-next-line: param-type-mismatch
   client:notify('project/open', {
     projects = vim.tbl_map(function(file)
@@ -42,7 +40,6 @@ end
 local function roslyn_handlers()
   return {
     ['workspace/projectInitializationComplete'] = function(_, _, ctx)
-      vim.notify('Roslyn project initialization complete', vim.log.levels.INFO, { title = 'roslyn_ls' })
       local client = assert(vim.lsp.get_client_by_id(ctx.client_id))
       refresh_diagnostics(client)
       return vim.NIL
@@ -65,11 +62,6 @@ local function roslyn_handlers()
       return vim.NIL
     end,
     ['razor/provideDynamicFileInfo'] = function(_, _, _)
-      vim.notify(
-        'Razor is not supported.\nPlease use https://github.com/tris203/rzls.nvim',
-        vim.log.levels.WARN,
-        { title = 'roslyn_ls' }
-      )
       return vim.NIL
     end,
   }
@@ -307,7 +299,7 @@ return {
           return
         end
 
-        vim.api.nvim_create_autocmd({ 'BufWritePost', 'InsertLeave' }, {
+        vim.api.nvim_create_autocmd({ 'BufWritePost', 'InsertLeave', 'TextChanged', 'TextChangedI', 'TextChangedP' }, {
           group = group,
           buffer = bufnr,
           callback = function()

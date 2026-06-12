@@ -44,12 +44,20 @@ return {
       nested = true,
     })
 
-    local file_types = { NvimTree = true, snacks_terminal = true }
+    local file_types = {
+      codecompanion = true,
+      codecompanion_input = true,
+      NvimTree = true,
+    }
+
     vim.api.nvim_create_autocmd('User', {
       pattern = 'PersistedSavePre',
       callback = function()
         for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-          if vim.api.nvim_buf_is_valid(buf) and file_types[vim.bo[buf].filetype] then
+          local should_delete = vim.api.nvim_buf_is_valid(buf)
+            and (file_types[vim.bo[buf].filetype] or vim.bo[buf].buftype == 'terminal')
+
+          if should_delete then
             vim.api.nvim_buf_delete(buf, {
               force = true,
             })

@@ -7,11 +7,14 @@ local parsers = {
   'javascript',
   'json',
   'lua',
+  'markdown',
+  'markdown_inline',
   'typescript',
   'tsx',
   'vim',
   'vimdoc',
   'xml',
+  'yaml',
 }
 
 local filetypes = {
@@ -25,12 +28,14 @@ local filetypes = {
   'json',
   'jsonc',
   'lua',
+  'markdown',
   'sh',
   'typescript',
   'typescriptreact',
   'vim',
   'vimdoc',
   'xml',
+  'yaml',
 }
 
 return {
