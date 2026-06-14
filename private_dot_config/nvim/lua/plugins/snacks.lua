@@ -9,6 +9,7 @@ return {
     picker = {
       show_empty = true,
       enabled = true,
+      ui_select = true,
       layouts = {
         find = {
           layout = {

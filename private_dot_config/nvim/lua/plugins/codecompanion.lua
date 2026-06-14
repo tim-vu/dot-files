@@ -59,9 +59,29 @@ return {
     },
     interactions = {
       chat = {
-        adapter = {
-          name = 'codex',
-          model = 'GPT-5.5',
+        adapter = 'codex',
+        keymaps = {
+          change_mode = {
+            modes = { n = 'gA' },
+            callback = function(chat)
+              if not chat.acp_connection then
+                return vim.notify('No ACP connection available', vim.log.levels.WARN)
+              end
+
+              for _, option in ipairs(chat.acp_connection:get_config_options()) do
+                if option.category == 'mode' or option.id == 'mode' then
+                  local command =
+                    require('codecompanion.interactions.chat.slash_commands.builtin.acp_session_options').new({
+                      Chat = chat,
+                    })
+                  return command:show_values(option)
+                end
+              end
+
+              vim.notify('No ACP mode options available', vim.log.levels.WARN)
+            end,
+            description = 'Change ACP mode',
+          },
         },
       },
     },

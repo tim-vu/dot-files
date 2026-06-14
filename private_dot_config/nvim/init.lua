@@ -6,7 +6,11 @@ end
 
 vim.loader.enable()
 
-vim.env.PATH = vim.fn.expand('$HOME/.dotnet') .. ':' .. vim.env.PATH
+vim.env.PATH = table.concat({
+  vim.fn.expand('$HOME/.local/bin'),
+  vim.fn.expand('$HOME/.dotnet'),
+  vim.env.PATH,
+}, ':')
 
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then

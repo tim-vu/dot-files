@@ -40,34 +40,37 @@ local filetypes = {
 
 return {
   'nvim-treesitter/nvim-treesitter',
-  branch = 'main',
+  branch = 'master',
+  build = ':TSUpdate',
   dependencies = {
     {
       'nvim-treesitter/nvim-treesitter-textobjects',
-      branch = 'main',
+      branch = 'master',
     },
   },
-  build = ':TSUpdate',
   config = function()
-    require('nvim-treesitter').setup()
-    require('nvim-treesitter').install(parsers)
-
-    require('nvim-treesitter-textobjects').setup({
-      select = {
-        lookahead = true,
-        selection_modes = {
-          ['@parameter.outer'] = 'v',
-          ['@function.outer'] = 'V',
-          ['@class.outer'] = 'V',
+    require('nvim-treesitter.configs').setup({
+      ensure_installed = parsers,
+      auto_install = false,
+      textobjects = {
+        select = {
+          enable = true,
+          lookahead = true,
+          selection_modes = {
+            ['@parameter.outer'] = 'v',
+            ['@function.outer'] = 'V',
+            ['@class.outer'] = 'V',
+          },
         },
-      },
-      move = {
-        set_jumps = true,
+        move = {
+          enable = true,
+          set_jumps = true,
+        },
       },
     })
 
-    local select = require('nvim-treesitter-textobjects.select')
-    local move = require('nvim-treesitter-textobjects.move')
+    local select = require('nvim-treesitter.textobjects.select')
+    local move = require('nvim-treesitter.textobjects.move')
 
     vim.keymap.set({ 'x', 'o' }, 'aa', function()
       select.select_textobject('@parameter.outer', 'textobjects')
