@@ -2,10 +2,6 @@ return {
   'nvim-tree/nvim-tree.lua',
   dependencies = {
     'nvim-tree/nvim-web-devicons',
-    {
-      'antosha417/nvim-lsp-file-operations',
-      dependencies = { 'nvim-lua/plenary.nvim' },
-    },
   },
   event = { 'BufReadPost' },
   ---@type nvim_tree.config
@@ -38,6 +34,14 @@ return {
         if node.nodes ~= nil and node.open then
           api.node.open.edit()
         end
+      end
+      local function create()
+        local node = api.tree.get_node_under_cursor()
+        if node == nil then
+          return
+        end
+        local path = node.type == 'directory' and node.absolute_path or vim.fs.dirname(node.absolute_path)
+        require('easy-dotnet').create_item(path)
       end
       local function is_absolute_path(path)
         return vim.startswith(path, '/') or path:match('^%a:[/\\]')
@@ -115,7 +119,7 @@ return {
       vim.keymap.set('n', 'l', edit_or_open, opts('Open'))
       vim.keymap.set('n', 'h', close_directory, opts('Close'))
       vim.keymap.set('n', 'p', api.node.navigate.parent, opts('Go to parent'))
-      vim.keymap.set('n', 'x', api.fs.create, opts('Create file'))
+      vim.keymap.set('n', 'x', create, opts('Create file'))
       vim.keymap.set('n', 'r', rename_relative, opts('Rename'))
       vim.keymap.set('n', '<C-r>', move_relative, opts('Move'))
       vim.keymap.set('n', '<Esc>', api.tree.close, opts('Close'))
@@ -138,6 +142,5 @@ return {
       { desc = 'Open tree', noremap = true, silent = true }
     )
     require('nvim-tree').setup(opts)
-    require('lsp-file-operations').setup()
   end,
 }

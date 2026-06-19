@@ -6,12 +6,6 @@ end
 
 vim.loader.enable()
 
-vim.env.PATH = table.concat({
-  vim.fn.expand('$HOME/.local/bin'),
-  vim.fn.expand('$HOME/.dotnet'),
-  vim.env.PATH,
-}, ':')
-
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
@@ -103,21 +97,21 @@ vim.schedule(function() -- to avoid increasing startup-time
 end)
 
 -- disable some default providers
-g.loaded_node_provider = 1
-g.loaded_python3_provider = 1
-g.loaded_perl_provider = 1
-g.loaded_ruby_provider = 1
-g.loaded_netrw = 1
-g.loaded_netrwPlugin = 1
+g.loaded_node_provider = 0
+g.loaded_python3_provider = 0
+g.loaded_perl_provider = 0
+g.loaded_ruby_provider = 0
+g.loaded_netrw = 0
+g.loaded_netrwPlugin = 0
 
 -- see full list:
 -- https://github.com/neovim/neovim/tree/master/runtime/plugin
-g.loaded_2html_plugin = 1
-g.loaded_gzip = 1
-g.loaded_man = 1
-g.loaded_tarPlugin = 1
-g.loaded_zipPlugin = 1
-g.loaded_remote_plugins = 1
+g.loaded_2html_plugin = 0
+g.loaded_gzip = 0
+g.loaded_man = 0
+g.loaded_tarPlugin = 0
+g.loaded_zipPlugin = 0
+g.loaded_remote_plugins = 0
 
 -- }}}
 -- autocmd {{{

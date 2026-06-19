@@ -3,7 +3,7 @@ return {
     package = 'json-lsp',
     ---@type vim.lsp.Config
     config = {
-      cmd = { 'vscode-json-languageserver', '--stdio' },
+      cmd = { 'vscode-json-language-server', '--stdio' },
       filetypes = { 'json', 'jsonc' },
       root_markers = { '.git' },
     },

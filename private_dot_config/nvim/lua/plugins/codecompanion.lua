@@ -13,7 +13,7 @@ return {
     'nvim-treesitter/nvim-treesitter',
     {
       'MeanderingProgrammer/render-markdown.nvim',
-      ft = { 'codecompanion', 'codecompanion-ui' },
+      ft = { 'codecompanion', 'codecompanion-ui', 'markdown' },
     },
     'ravitemer/codecompanion-history.nvim',
     'mrjones2014/codecompanion-ui.nvim',
@@ -29,21 +29,6 @@ return {
       },
       ui = {
         enabled = true,
-        opts = {
-          chat = {
-            winbar = {
-              {
-                component = function(chat)
-                  local title = chat.title or chat.opts.title
-                  return {
-                    text = ('󰭹 %s%%<'):format(title or '[No Title]'),
-                    hl = 'CcuiTitle',
-                  }
-                end,
-              },
-            },
-          },
-        },
       },
     },
     adapters = {
@@ -61,26 +46,26 @@ return {
       chat = {
         adapter = 'codex',
         keymaps = {
-          change_mode = {
+          agent_mode = {
             modes = { n = 'gA' },
+            --- @param chat CodeCompanion.Chat
             callback = function(chat)
-              if not chat.acp_connection then
-                return vim.notify('No ACP connection available', vim.log.levels.WARN)
+              local options = chat.acp_connection and chat.acp_connection:get_config_options() or {}
+              local mode = vim.iter(options):find(function(option)
+                return option.id == 'mode'
+              end)
+
+              if not mode then
+                return
               end
 
-              for _, option in ipairs(chat.acp_connection:get_config_options()) do
-                if option.category == 'mode' or option.id == 'mode' then
-                  local command =
-                    require('codecompanion.interactions.chat.slash_commands.builtin.acp_session_options').new({
-                      Chat = chat,
-                    })
-                  return command:show_values(option)
-                end
-              end
-
-              vim.notify('No ACP mode options available', vim.log.levels.WARN)
+              local command =
+                require('codecompanion.interactions.chat.slash_commands.builtin.acp_session_options').new({
+                  Chat = chat,
+                })
+              command:show_values(mode)
             end,
-            description = 'Change ACP mode',
+            description = 'Change agent mode',
           },
         },
       },

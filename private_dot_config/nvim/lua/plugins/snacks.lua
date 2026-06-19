@@ -2,7 +2,7 @@
 return {
   'folke/snacks.nvim',
   priority = 1000,
-  lazy = true,
+  lazy = false,
   ---@type snacks.Config
   opts = {
     notifier = {},
