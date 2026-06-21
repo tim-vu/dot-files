@@ -37,14 +37,6 @@ return {
     },
   },
   {
-    'numToStr/Comment.nvim',
-    opts = {
-      toggler = { line = '<C-_>' },
-      opleader = { line = '<C-_>' },
-      mappings = { basic = true, extra = false },
-    },
-  },
-  {
     'tpope/vim-fugitive',
     keys = {
       { '<leader>gg', '<cmd>Git<cr>', desc = '[G]it Fugitive' },

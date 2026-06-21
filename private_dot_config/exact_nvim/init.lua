@@ -26,9 +26,9 @@ vim.opt.rtp:prepend(lazypath)
 local o = vim.o
 local opt = vim.opt
 local g = vim.g
-
 -- general
 g.mapleader = ' '
+--opt.rocks.enabled = false
 opt.undofile = true -- enable persistent undo
 opt.backup = false -- disable backup
 opt.confirm = true -- Confirm to save changes before exiting modified buffer
@@ -116,6 +116,8 @@ g.loaded_remote_plugins = 0
 -- }}}
 -- autocmd {{{
 
+vim.api.nvim_set_hl(0, 'LspCodeLens', { fg = '#717171', italic = true })
+
 local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
 vim.api.nvim_create_autocmd('TextYankPost', {
   callback = function()
@@ -161,7 +163,11 @@ vim.keymap.set('n', 'N', 'Nzzv', { noremap = true, silent = true })
 -- }}}
 -- plugins {{{
 
-require('lazy').setup('plugins')
+require('lazy').setup('plugins', {
+  rocks = {
+    enabled = false,
+  },
+})
 
 vim.cmd([[colorscheme kanagawa-dragon]])
 

@@ -16,6 +16,10 @@ for name, module in pairs(servers) do
   end
 end
 
+vim.diagnostic.config({
+  virtual_text = true,
+})
+
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('lsp-attach', { clear = true }),
   callback = function(event)
@@ -27,13 +31,25 @@ vim.api.nvim_create_autocmd('LspAttach', {
     map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
     map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
     map('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
-    map('<leader>fu', '<cmd>Trouble lsp_references focus=true<cr>', '[F]ind [U]sages')
+    map('<leader>fu', function()
+      local api = require('trouble')
+      api.open({
+        mode = 'lsp_references',
+        focus = true,
+      })
+    end, '[F]ind [U]sages')
     map('gi', vim.lsp.buf.implementation, '[G]oto [I]mplementation')
     map('<leader>jd', vim.lsp.buf.hover, '[J]ava [D]ocs')
     map('<leader>ed', function()
       vim.diagnostic.open_float({ scope = 'cursor' })
     end, '[E]rror [D]ialog')
-    map('<leader>el', '<cmd>Trouble diagnostics filter.severity = vim.diagnostic.severity.ERROR<cr>', '[E]rror [L]ist')
+    map('<leader>el', function()
+      local api = require('trouble')
+      api.open({
+        mode = 'diagnostics',
+        filter = { severity = vim.diagnostic.severity.WARN },
+      })
+    end, '[E]rror [L]ist')
   end,
 })
 

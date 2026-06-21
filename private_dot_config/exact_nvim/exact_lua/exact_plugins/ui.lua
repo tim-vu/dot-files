@@ -178,6 +178,16 @@ return {
         poll_rate = false,
         clear_on_detach = false,
       },
+      notification = {
+        window = {
+          avoid = { 'NvimTree' },
+        },
+      },
+      integration = {
+        ['nvim-tree'] = {
+          enable = true,
+        },
+      },
     },
   },
   { 'typicode/bg.nvim', lazy = false },

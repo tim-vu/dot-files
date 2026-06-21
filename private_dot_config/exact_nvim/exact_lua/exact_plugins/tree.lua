@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-field
 return {
   'nvim-tree/nvim-tree.lua',
   dependencies = {
@@ -132,6 +133,9 @@ return {
     git = {
       enable = true,
       show_on_dirs = true,
+    },
+    notify = {
+      threshold = vim.log.levels.WARN,
     },
   },
   config = function(_, opts)

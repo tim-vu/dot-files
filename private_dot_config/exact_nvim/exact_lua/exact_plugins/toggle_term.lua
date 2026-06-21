@@ -144,6 +144,7 @@ local function new_terminal()
   local bufnr = vim.api.nvim_get_current_buf()
   vim.bo[bufnr].buflisted = false
   vim.bo[bufnr].bufhidden = 'hide'
+  vim.bo[bufnr].filetype = 'terminal'
 
   vim.keymap.set('t', '<Esc>', close_panel, { buffer = bufnr, desc = 'Hide terminal panel' })
   vim.keymap.set({ 'n', 't' }, '<C-w>n', new_terminal, { buffer = bufnr, desc = 'New terminal' })

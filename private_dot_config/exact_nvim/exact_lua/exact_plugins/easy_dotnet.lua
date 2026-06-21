@@ -15,6 +15,9 @@ return {
   },
   config = function()
     require('easy-dotnet').setup({
+      lsp = {
+        restart_roslyn_on_branch_change = true,
+      },
       auto_bootstrap_namespace = {
         type = 'file_scoped',
       },

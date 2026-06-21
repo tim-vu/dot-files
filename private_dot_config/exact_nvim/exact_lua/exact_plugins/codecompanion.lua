@@ -13,6 +13,11 @@ return {
     'nvim-treesitter/nvim-treesitter',
     {
       'MeanderingProgrammer/render-markdown.nvim',
+      opts = {
+        latex = {
+          enabled = false,
+        },
+      },
       ft = { 'codecompanion', 'codecompanion-ui', 'markdown' },
     },
     'ravitemer/codecompanion-history.nvim',
@@ -45,29 +50,6 @@ return {
     interactions = {
       chat = {
         adapter = 'codex',
-        keymaps = {
-          agent_mode = {
-            modes = { n = 'gA' },
-            --- @param chat CodeCompanion.Chat
-            callback = function(chat)
-              local options = chat.acp_connection and chat.acp_connection:get_config_options() or {}
-              local mode = vim.iter(options):find(function(option)
-                return option.id == 'mode'
-              end)
-
-              if not mode then
-                return
-              end
-
-              local command =
-                require('codecompanion.interactions.chat.slash_commands.builtin.acp_session_options').new({
-                  Chat = chat,
-                })
-              command:show_values(mode)
-            end,
-            description = 'Change agent mode',
-          },
-        },
       },
     },
     display = {
